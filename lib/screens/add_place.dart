@@ -10,6 +10,12 @@ class AddPlace extends StatefulWidget {
 }
 
 class _AddPlaceState extends State<AddPlace> {
+  String? _placeName;
+
+  void _addPlace() {
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +23,25 @@ class _AddPlaceState extends State<AddPlace> {
         title: Text('Add new Place'),
         centerTitle: true,
       ),
-      body: const Placeholder(),
+      body: Form(
+        child: Column(
+          children: [
+            TextFormField(
+              maxLength: 50,
+              decoration: const InputDecoration(label: Text('Add Place')),
+              validator: (value) {},
+              onSaved: (newValue) {
+                _placeName = newValue;
+              },
+            ),
+            ElevatedButton.icon(
+              onPressed: _addPlace,
+              label: const Text("Add place"),
+              icon: const Icon(Icons.add),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
