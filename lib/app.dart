@@ -8,8 +8,8 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter',
-      theme: dartTheme,
+      title: 'Flutter Native',
+      theme: nativeTheme,
       home: const HomeScreen(),
     );
   }

@@ -11,9 +11,9 @@ final dartTheme = ThemeData.dark().copyWith(
 );
 
 final nativeColorScheme = ColorScheme.fromSeed(
-  seedColor: Color.fromARGB(255, 54, 54, 54),
+  seedColor: const Color.fromARGB(255, 54, 54, 54),
   brightness: Brightness.dark,
-  background: Color.fromARGB(255, 59, 58, 59),
+  background: const Color.fromARGB(255, 214, 186, 214),
 );
 
 final nativeTheme = ThemeData().copyWith(
