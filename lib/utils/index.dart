@@ -1,0 +1,1 @@
+String realtimeUri = 'flutter-ject-default-rtdb.asia-southeast1.firebasedatabase.app';
