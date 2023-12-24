@@ -18,6 +18,13 @@ class PlaceItemWidget extends StatelessWidget {
     return Card(
       child: ListTile(
         title: Text(item.title),
+        subtitle: Text(
+          item.location.address,
+          style: Theme.of(context)
+              .textTheme
+              .bodySmall!
+              .copyWith(color: Theme.of(context).colorScheme.onBackground),
+        ),
         onTap: () {
           _onTap(context);
         },

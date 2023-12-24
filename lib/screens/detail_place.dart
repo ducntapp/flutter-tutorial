@@ -1,10 +1,17 @@
 import 'package:f_tutorial/models/place.dart';
+import 'package:f_tutorial/screens/map.dart';
 import 'package:flutter/material.dart';
 
 class PlaceDetail extends StatelessWidget {
   const PlaceDetail({super.key, required this.place});
 
   final Place place;
+
+  String get locationImage {
+    final lat = place.location.latitude;
+    final long = place.location.longitude;
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$long&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:S%7C$lat,$long&key=AIzaSyCajIm_KZze2ELLu6j3IkEpnY_Srv69Rpc';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +27,56 @@ class PlaceDetail extends StatelessWidget {
             width: double.infinity,
             height: double.infinity,
           ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Column(
+              // mainAxisSize: MainAxisSize.min,
+              // mainAxisAlignment: MainAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MapScreen(
+                          location: place.location,
+                          isSelecting: false,
+                        ),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundImage: NetworkImage(
+                      locationImage,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 16,
+                  ),
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: [Colors.transparent, Colors.black54],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter),
+                  ),
+                  child: Text(
+                    place.location.address,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                  ),
+                )
+              ],
+            ),
+          )
         ],
       ),
     );

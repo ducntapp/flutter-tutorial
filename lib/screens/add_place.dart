@@ -24,16 +24,19 @@ class _AddPlaceState extends State<AddPlace> {
   bool _isSending = false;
   final _formKey = GlobalKey<FormState>();
   File? _selectedImage;
+  PlaceLocation? _selectedLocation;
 
   void _addPlace() async {
     final appState = Provider.of<AppProvider>(context, listen: false);
     // TODO: check validate
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() ||
+        _selectedImage != null ||
+        _selectedLocation != null) {
       _formKey.currentState!.save();
       setState(() {
         _isSending = true;
       });
-      appState.addPlace(_placeName!, _selectedImage!);
+      appState.addPlace(_placeName!, _selectedImage!, _selectedLocation!);
       // // TODO: handle back
       if (!context.mounted) {
         return;
@@ -56,36 +59,42 @@ class _AddPlaceState extends State<AddPlace> {
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              TextFormField(
-                maxLength: 50,
-                decoration: const InputDecoration(label: Text('Add Place')),
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.onBackground),
-                validator: (value) {
-                  if (value == null || value.trim().length <= 1) {
-                    return 'Must be more than 1 character';
-                  }
-                  return null;
-                },
-                onSaved: (newValue) {
-                  _placeName = newValue;
-                },
-              ),
-              const SizedBox(height: 8),
-              InputImage(onPickImage: (image){
-                _selectedImage = image;
-              }),
-              const SizedBox(height: 8),
-              LocationInput(),
-              const SizedBox(height: 8),
-              ElevatedButton.icon(
-                onPressed: _isSending ? null : _addPlace,
-                label: const Text("Add place"),
-                icon: const Icon(Icons.add),
-              )
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextFormField(
+                  maxLength: 50,
+                  decoration: const InputDecoration(label: Text('Add Place')),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onBackground),
+                  validator: (value) {
+                    if (value == null || value.trim().length <= 1) {
+                      return 'Must be more than 1 character';
+                    }
+                    return null;
+                  },
+                  onSaved: (newValue) {
+                    _placeName = newValue;
+                  },
+                ),
+                const SizedBox(height: 8),
+                InputImage(onPickImage: (image) {
+                  _selectedImage = image;
+                }),
+                const SizedBox(height: 8),
+                LocationInput(
+                  onPickLocation: (location) {
+                    _selectedLocation = location;
+                  },
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  onPressed: _isSending ? null : _addPlace,
+                  label: const Text("Add place"),
+                  icon: const Icon(Icons.add),
+                )
+              ],
+            ),
           ),
         ),
       ),
