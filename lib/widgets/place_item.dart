@@ -9,7 +9,7 @@ class PlaceItemWidget extends StatelessWidget {
 
   void _onTap(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const PlaceDetail(),
+      builder: (context) => PlaceDetail(place: item),
     ));
   }
 
@@ -21,7 +21,10 @@ class PlaceItemWidget extends StatelessWidget {
         onTap: () {
           _onTap(context);
         },
-        // leading: Container(width: 24, height: 24, color: item.category?.color),
+        leading: CircleAvatar(
+          backgroundImage: FileImage(item.image),
+          radius: 24,
+        ),
         // trailing: Text(item.quantity.toString()),
       ),
     );

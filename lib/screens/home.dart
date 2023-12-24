@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:f_tutorial/models/place.dart';
 import 'package:f_tutorial/screens/add_place.dart';
+import 'package:f_tutorial/store/index.dart';
 import 'package:f_tutorial/utils/index.dart';
 import 'package:f_tutorial/widgets/place_item.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as https;
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,99 +19,54 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Place> _placeList = [];
   bool _isLoading = true;
-  String? _error;
 
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     _loadPlaces();
+    super.initState();
   }
 
-  void _loadPlaces() async {
-    final getUri = Uri.https(
-      "flutter-ject-default-rtdb.asia-southeast1.firebasedatabase.app",
-      "native-app.json",
-    );
-    try {
-      final resp = await https.get(getUri);
-      var mapData = json.decode(resp.body);
-
-      if (resp.body == null) {
-        _isLoading = false;
-        return;
-      }
-
-      List<Place> loadedItem = [];
-      for (var item in mapData.entries) {
-        loadedItem.add(Place(id: item.key,title: item.value['title']));
-      }
+  void _loadPlaces() {
+    setState(() {
+      _isLoading = true;
+    });
+    Provider.of<AppProvider>(context, listen: false)
+        .fetchAndSetPlace()
+        .then((value) {
       setState(() {
-        _placeList = loadedItem;
         _isLoading = false;
       });
-    } catch (e) {
-      setState(() {
-        _error = "Something wrong!";
-        _isLoading = false;
-      });
-    }
+    });
   }
 
-  void _addNewPlace() async {
-    final backData = await Navigator.of(context).push(
+  void _addNewPlace() {
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (cxt) => const AddPlace(),
       ),
     );
-    if (backData != null) {
-      setState(() {
-        _placeList.add(backData);
-      });
-    }
   }
 
   void _deletePlace(Place item) async {
-    final deleteIndex = _placeList.indexOf(item);
-    final deleteUri = Uri.https(
-      'flutter-ject-default-rtdb.asia-southeast1.firebasedatabase.app',
-      'native-app/${item.id}.json',
-    );
-    setState(() {
-      _placeList.remove(item);
-    });
-    try {
-      final res = await https.delete(deleteUri);
-      if (res.statusCode >= 400) {
-        setState(() {
-          _placeList.insert(deleteIndex, item);
-        });
-      }
-    } catch (e) {
-      print(e);
-    }
+    Provider.of<AppProvider>(context, listen: false).deletePlace(item);
   }
 
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppProvider>(context);
     Widget content = ListView.builder(
-      itemCount: _placeList.length,
+      itemCount: appState.listPlace.length,
       itemBuilder: (ctx, index) => Dismissible(
-        key: ValueKey(_placeList[index].id),
+        key: UniqueKey(),
         onDismissed: (direction) {
-          _deletePlace(_placeList[index]);
+          _deletePlace(appState.listPlace[index]);
         },
         child: PlaceItemWidget(
-          item: _placeList[index],
+          item: appState.listPlace[index],
         ),
       ),
     );
-
-    if (_error != null) {
-      content = Center(
-        child: Text(_error!),
-      );
-    }
 
     if (_isLoading) {
       content = const Center(
@@ -117,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    if (_placeList.isEmpty) {
+    if (appState.listPlace.isEmpty) {
       content = Center(
         child: Text(
           'No Places yet',
@@ -128,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your places'),
+        title: const Text('Your place'),
         actions: [
           IconButton(onPressed: _addNewPlace, icon: const Icon(Icons.add))
         ],
