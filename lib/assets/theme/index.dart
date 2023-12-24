@@ -19,11 +19,16 @@ final nativeColorScheme = ColorScheme.fromSeed(
 final nativeTheme = ThemeData().copyWith(
   colorScheme: nativeColorScheme,
   textTheme: GoogleFonts.ubuntuCondensedTextTheme().copyWith(
-    titleSmall: GoogleFonts.ubuntuCondensed(fontWeight: FontWeight.normal),
+    titleSmall: GoogleFonts.ubuntuCondensed(
+      fontWeight: FontWeight.normal,
+    ),
     titleMedium: GoogleFonts.ubuntuCondensed(
       fontWeight: FontWeight.w500,
     ),
-    titleLarge: GoogleFonts.ubuntuCondensed(fontWeight: FontWeight.bold),
+    titleLarge: GoogleFonts.ubuntuCondensed(
+      fontWeight: FontWeight.bold,
+    ),
   ),
   scaffoldBackgroundColor: nativeColorScheme.background,
 );
+
